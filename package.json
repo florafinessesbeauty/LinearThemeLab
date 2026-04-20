@@ -13,6 +13,7 @@
     "test": "npm run lint && node packages/theme-lint/run-theme-lint.cjs"
   },
   "dependencies": {
+    "@github/copilot-sdk": "^0.2.2",
     "jszip": "^3.10.1",
     "next": "14.1.0",
     "next-auth": "^4.24.5",
