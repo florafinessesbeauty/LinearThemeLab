@@ -4,13 +4,19 @@ export interface ApiClientOptions {
 }
 
 export class ApiClient {
-  constructor(private opts: ApiClientOptions) {}
+  constructor(private readonly opts: ApiClientOptions) {}
 
-  private headers() {
-    return this.opts.token
-      ? { Authorization: `Bearer ${this.opts.token}`, "Content-Type": "application/json" }
-      : { "Content-Type": "application/json" };
+  private headers(): Record<string, string> {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json"
+  };
+
+  if (this.opts.token) {
+    headers.Authorization = `Bearer ${this.opts.token}`;
   }
+
+  return headers;
+}
 
   async health() {
     const res = await fetch(`${this.opts.baseUrl}/health`);
