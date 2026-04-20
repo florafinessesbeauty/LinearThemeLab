@@ -1,0 +1,35 @@
+{
+  "name": "linearthemelab",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:next\" \"npm run dev:server\"",
+    "dev:next": "next dev",
+    "dev:server": "cd server && npm run dev",
+    "build": "next build && cd server && npm run build",
+    "start:next": "next start",
+    "start:server": "cd server && npm run start",
+    "start": "concurrently \"npm run start:next\" \"npm run start:server\"",
+    "lint": "next lint",
+    "test": "npm run lint && node packages/theme-lint/run-theme-lint.cjs"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "next": "14.1.0",
+    "next-auth": "^4.24.5",
+    "php-parser": "^3.5.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.0",
+    "autoprefixer": "^10.5.0",
+    "concurrently": "^9.2.1",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.1.0",
+    "postcss": "^8.5.10",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^5.4.0"
+  }
+}

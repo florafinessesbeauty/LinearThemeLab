@@ -1,0 +1,29 @@
+{
+  "name": "Fashion Boutique Hero",
+  "settings": [
+    {
+      "id": "heading",
+      "type": "text",
+      "label": "Heading",
+      "default": "New Season Fashion Boutique"
+    },
+    {
+      "id": "subheading",
+      "type": "text",
+      "label": "Subheading",
+      "default": "Curated looks for style‑obsessed shoppers."
+    },
+    {
+      "id": "cta_label",
+      "type": "text",
+      "label": "CTA Label",
+      "default": "Shop the Collection"
+    },
+    {
+      "id": "cta_link",
+      "type": "url",
+      "label": "CTA Link",
+      "default": "/collections/all"
+    }
+  ]
+}

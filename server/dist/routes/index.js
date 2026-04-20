@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.apiRouter = void 0;
+const express_1 = require("express");
+const themes_js_1 = require("./themes.js");
+const payments_js_1 = require("./payments.js");
+const auth_js_1 = require("./auth.js");
+exports.apiRouter = (0, express_1.Router)();
+exports.apiRouter.use("/auth", auth_js_1.authRouter);
+exports.apiRouter.use("/themes", themes_js_1.themesRouter);
+exports.apiRouter.use("/payments", payments_js_1.paymentsRouter);

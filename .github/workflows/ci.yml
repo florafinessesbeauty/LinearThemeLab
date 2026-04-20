@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps (root)
+        run: npm install
+
+      - name: Install server deps
+        run: |
+          cd server
+          npm install
+
+      - name: Install app deps
+        run: |
+          cd app
+          npm install
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type-check
+        run: npx tsc --noEmit
+
+      - name: Build server
+        run: cd server && npm run build
+
+      - name: Build app
+        run: cd app && npm run build

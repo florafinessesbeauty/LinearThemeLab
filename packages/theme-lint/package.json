@@ -1,0 +1,6 @@
+{
+  "name": "@linearthemelab/theme-lint",
+  "version": "1.0.0",
+  "main": "run-theme-lint.cjs",
+  "type": "commonjs"
+}
