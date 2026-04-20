@@ -16,5 +16,8 @@ export const env = {
   S3_BUCKET_NAME: process.env.S3_BUCKET_NAME || "",
   S3_REGION: process.env.S3_REGION || "",
 
-  JWT_SECRET: process.env.JWT_SECRET || "dev-secret"
+  JWT_SECRET: process.env.JWT_SECRET || "dev-secret",
+
+  // ⭐ NEW — required for theme ZIP download URLs
+  CDN_URL: process.env.CDN_URL || ""
 };

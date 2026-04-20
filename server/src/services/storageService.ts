@@ -1,42 +1,47 @@
 import { s3Client } from "../config/s3.js";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "../config/env.js";
-import { randomUUID } from "crypto";
-import JSZip from "jszip";
-import fs from "fs";
-import path from "path";
+import { randomUUID } from "node:crypto";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
-export async function uploadThemeZip(
-  themeId: string,
-  files: Record<string, string>
-) {
-  const zip = new JSZip();
-  for (const [filePath, content] of Object.entries(files)) {
-    zip.file(filePath, content);
-  }
-  const buffer = await zip.generateAsync({ type: "nodebuffer" });
+import { buildThemeZip } from "@linearthemelab/shared";
+import type { ThemeFile } from "@linearthemelab/shared";
 
-  const key = `themes/${themeId}.zip`;
+export async function uploadThemeZip(id: string, files: ThemeFile[]) {
+  // Build ZIP buffer using shared ZIP builder
+  const zipBuffer = await buildThemeZip(files);
 
-  // If S3 is not configured, write the zip to a local tmp directory and return a file URL.
+  const key = `themes/${id}.zip`;
+
+  // LOCAL FALLBACK (no S3 configured)
   if (!env.S3_BUCKET_NAME) {
     const outDir = path.join(process.cwd(), "tmp", "themes");
     fs.mkdirSync(outDir, { recursive: true });
-    const outPath = path.join(outDir, `${themeId}.zip`);
-    fs.writeFileSync(outPath, buffer);
-    return { key: outPath, url: `file://${outPath}` };
+
+    const outPath = path.join(outDir, `${id}.zip`);
+    fs.writeFileSync(outPath, zipBuffer);
+
+    return {
+      key: outPath,
+      url: `file://${outPath}`
+    };
   }
 
+  // UPLOAD TO S3
   await s3Client.send(
     new PutObjectCommand({
       Bucket: env.S3_BUCKET_NAME,
       Key: key,
-      Body: buffer,
+      Body: zipBuffer,
       ContentType: "application/zip"
     })
   );
 
-  return { key, url: `s3://${env.S3_BUCKET_NAME}/${key}` };
+  return {
+    key,
+    url: `${env.CDN_URL}/${key}`
+  };
 }
 
 export function createThemeId() {

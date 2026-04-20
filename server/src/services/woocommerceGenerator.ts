@@ -27,7 +27,7 @@ add_action('after_setup_theme', '${themeSlug}_setup');
     files: {
       "functions.php": functionsPhp,
       "index.php": indexPhp,
-      "style.css": \`/* ${niche} Woo Theme */\`
+      "style.css": `/* ${niche} Woo Theme */`
     },
     meta: { niche, goal, platform: "woocommerce" }
   };
