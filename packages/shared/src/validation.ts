@@ -1,5 +1,5 @@
-import { themeRequestSchema } from "./themeSchemas";
+import { ThemeGenerateRequestSchema } from "./themeSchemas";
 
 export function validateThemeRequest(input: unknown) {
-  return themeRequestSchema.parse(input);
+  return ThemeGenerateRequestSchema.parse(input);
 }
