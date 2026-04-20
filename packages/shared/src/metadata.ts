@@ -1,6 +1,4 @@
-export type ThemePlatform = "shopify" | "woocommerce";
-
-export const SUPPORTED_PLATFORMS: ThemePlatform[] = ["shopify", "woocommerce"];
+import type { ThemePlatform } from "./platformRegistry";
 
 export const NICHE_REGISTRY: Record<ThemePlatform, string[]> = {
   shopify: [

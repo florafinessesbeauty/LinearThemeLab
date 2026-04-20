@@ -1,4 +1,4 @@
-export type ThemePlatform = "shopify" | "woocommerce";
+import type { ThemePlatform } from "./platformRegistry";
 
 export interface ThemeManifest {
   id: string;
