@@ -4,28 +4,41 @@ import { generateThemeWithCopilot } from "../services/copilotThemeService.js";
 import { uploadThemeZip, createThemeId } from "../services/storageService.js";
 import { addUserTheme, listUserThemes, getThemeById } from "../services/userService.js";
 
+import {
+  ThemeGenerateRequestSchema,
+  ThemeRecordSchema
+} from "@linearthemelab/shared";
+
 export const themesRouter = Router();
 
 themesRouter.post("/generate", requireAuth, async (req: AuthRequest, res) => {
-  const { niche, goal, platform } = req.body;
+  // Validate request using shared schema
+  const parsed = ThemeGenerateRequestSchema.parse(req.body);
 
-  const theme = await generateThemeWithCopilot(platform, niche, goal);
+  const theme = await generateThemeWithCopilot(
+    parsed.platform,
+    parsed.niche,
+    parsed.goal
+  );
+
   const id = createThemeId();
-
   const upload = await uploadThemeZip(id, theme.files);
 
   const record = {
     id,
-    platform,
-    niche,
-    goal,
+    platform: parsed.platform,
+    niche: parsed.niche,
+    goal: parsed.goal,
     s3Key: upload.key,
     createdAt: new Date().toISOString()
   };
 
-  addUserTheme(req.user!.id, record);
+  // Validate record using shared schema
+  const validatedRecord = ThemeRecordSchema.parse(record);
 
-  res.json(record);
+  addUserTheme(req.user!.id, validatedRecord);
+
+  res.json(validatedRecord);
 });
 
 themesRouter.get("/list", requireAuth, (req: AuthRequest, res) => {
