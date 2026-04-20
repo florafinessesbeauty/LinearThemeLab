@@ -1,3 +1,6 @@
-import { CopilotClient } from "@github/copilot-sdk";
-
-export const copilotClient = new CopilotClient();
+export const copilotClient = {
+  async get() {
+    const { CopilotClient } = await import("@github/copilot-sdk");
+    return new CopilotClient();
+  }
+};
