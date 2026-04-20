@@ -9,8 +9,18 @@
     "strict": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "noEmit": false,
+    "preserveSymlinks": true
   },
-  "include": ["src"],
-  "exclude": ["dist", "node_modules"]
+  "include": [
+    "src",
+    "../packages/shared/src"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
 }

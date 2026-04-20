@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": [
-      "DOM",
-      "ES2020"
-    ],
+    "lib": ["DOM", "ES2020"],
     "module": "ESNext",
-    "moduleResolution": "Node",
+
+    // Modern, TS6+ safe module resolution
+    "moduleResolution": "bundler",
+
+    // Required for Next.js + monorepo
     "allowJs": false,
     "strict": true,
     "noImplicitAny": true,
@@ -16,23 +17,28 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+
+    // Monorepo path aliases
     "baseUrl": ".",
     "paths": {
-      "@linearthemelab/shared": [
-        "packages/shared/src"
-      ],
-      "@linearthemelab/shared/*": [
-        "packages/shared/src/*"
-      ]
+      "@linearthemelab/shared": ["packages/shared/src"],
+      "@linearthemelab/shared/*": ["packages/shared/src/*"]
     },
+
+    // Next.js required
     "noEmit": true,
     "incremental": true,
+
+    // Silence TS6 deprecation warnings
+    "ignoreDeprecations": "6.0",
+
     "plugins": [
       {
         "name": "next"
       }
     ]
   },
+
   "include": [
     "app",
     "server/src",
@@ -40,6 +46,7 @@
     "next-env.d.ts",
     ".next/types/**/*.ts"
   ],
+
   "exclude": [
     "node_modules",
     ".next",
