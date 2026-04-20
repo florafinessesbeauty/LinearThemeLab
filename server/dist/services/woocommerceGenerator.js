@@ -2,7 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateWooTheme = generateWooTheme;
 function generateWooTheme(niche, goal) {
-    const themeSlug = `${niche.replaceAll(/\s+/g, "-").toLowerCase()}-woo-theme`;
+    // Safe version: replace() with regex replaces ALL matches
+    const themeSlug = `${niche.replace(/\s+/g, "-").toLowerCase()}-woo-theme`;
     const functionsPhp = `<?php
 /*
 Theme Name: ${niche} Woo Theme
@@ -26,8 +27,11 @@ add_action('after_setup_theme', '${themeSlug}_setup');
         files: {
             "functions.php": functionsPhp,
             "index.php": indexPhp,
-            "style.css": `/* ${niche} Woo Theme */`
-        },
-        meta: { niche, goal, platform: "woocommerce" }
+            "style.css": 
+        } `/* ${niche} Woo Theme */\`
+    },
+    meta: { niche, goal, platform: "woocommerce" }
+  };
+}
     };
 }
