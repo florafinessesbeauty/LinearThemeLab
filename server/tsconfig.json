@@ -14,7 +14,8 @@
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "noEmit": false,
-    "preserveSymlinks": true
+    "preserveSymlinks": true,
+    "ignoreDeprecations": "6.0"
   },
   "include": [
     "src",

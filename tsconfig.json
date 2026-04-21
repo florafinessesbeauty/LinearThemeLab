@@ -18,12 +18,15 @@
 
     "baseUrl": ".",
     "paths": {
+      "@/*": ["*"],
       "@linearthemelab/shared": ["packages/shared/src"],
       "@linearthemelab/shared/*": ["packages/shared/src/*"]
     },
 
     "noEmit": true,
     "incremental": true,
+
+    "ignoreDeprecations": "6.0",
 
     "plugins": [
       {

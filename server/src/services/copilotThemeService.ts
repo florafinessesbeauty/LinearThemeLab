@@ -23,9 +23,9 @@ export async function generateThemeWithAdapters(
   // Build ZIP buffer
   const zipBuffer = await buildThemeZip(files);
 
-  // Create manifest
+  // Manifest (ID added later in route)
   const manifest = createThemeManifest({
-    id: "", // filled later by route
+    id: "",
     platform,
     niche,
     goal

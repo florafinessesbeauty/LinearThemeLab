@@ -13,7 +13,7 @@ import { generateThemeWithAdapters } from "../services/copilotThemeService.js";
 
 export const themesRouter = Router();
 
-themesRouter.post("/generate", requireAuth, async (req: AuthRequest, res) => {
+tthemesRouter.post("/generate", requireAuth, async (req: AuthRequest, res) => {
   try {
     const parsed = ThemeGenerateRequestSchema.parse(req.body);
 
@@ -26,14 +26,14 @@ themesRouter.post("/generate", requireAuth, async (req: AuthRequest, res) => {
 
     const id = createThemeId();
 
-    // Generate theme using shared adapters
+    // Generate theme using adapters
     const { files, zipBuffer, manifest } = await generateThemeWithAdapters(
       parsed.platform,
       parsed.niche,
       parsed.goal
     );
 
-    // Upload ZIP to S3
+    // Upload ZIP
     const upload = await uploadThemeZip(id, files);
 
     // Final record
@@ -52,7 +52,7 @@ themesRouter.post("/generate", requireAuth, async (req: AuthRequest, res) => {
 
     return res.json({
       ...validatedRecord,
-      manifest,
+      manifest: { ...manifest, id },
       downloadUrl: upload.url
     });
   } catch (err) {

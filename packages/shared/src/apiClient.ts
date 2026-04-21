@@ -33,3 +33,19 @@ export class ApiClient {
     return res.json();
   }
 }
+
+export async function generateThemeFrontend(data: {
+  platform: string;
+  niche: string;
+  goal: string;
+}) {
+  const res = await fetch("/api/themes/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  if (!res.ok) throw new Error("Theme generation failed");
+
+  return res.json();
+}

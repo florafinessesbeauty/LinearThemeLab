@@ -18,6 +18,11 @@ export const env = {
 
   JWT_SECRET: process.env.JWT_SECRET || "dev-secret",
 
-  // ⭐ NEW — required for theme ZIP download URLs
-  CDN_URL: process.env.CDN_URL || ""
+  // CDN for theme ZIPs
+  CDN_URL: process.env.CDN_URL || "",
+
+  // Copilot AI backend endpoint
+  COPILOT_API_URL:
+    process.env.COPILOT_API_URL ||
+    "https://api.copilot.microsoft.com/v1/code"
 };
