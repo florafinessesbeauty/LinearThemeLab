@@ -2,3 +2,5 @@ node_modules
 
 # Added by ggshield
 .cache_ggshield
+.env
+.env.local
