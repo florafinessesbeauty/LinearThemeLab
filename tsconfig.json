@@ -1,5 +1,6 @@
 {
-  "compilerOptions": {
+  "compilerOptions": {  
+    "types": ["node"],
     "target": "ES2020",
     "lib": ["DOM", "ES2020"],
     "module": "ESNext",
@@ -36,12 +37,12 @@
   },
 
   "include": [
-    "app",
-    "server/src",
-    "packages/shared/src",
-    "next-env.d.ts",
-    ".next/types/**/*.ts"
-  ],
+  "app",
+  "server/src",
+  "packages/shared/src",
+  "next-env.d.ts",
+  ".next/types/**/*.ts"
+],
 
   "exclude": [
     "node_modules",

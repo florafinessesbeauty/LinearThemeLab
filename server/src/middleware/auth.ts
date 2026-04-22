@@ -1,12 +1,17 @@
+// server/src/middleware/auth.ts
 import jwt from "jsonwebtoken";
-import { env } from "../config/env.js";
 import { Request, Response, NextFunction } from "express";
+import { env } from "../config/env";
 
 export interface AuthRequest extends Request {
   user?: { id: string; email: string };
 }
 
-export function requireAuth(req: AuthRequest, res: Response, next: NextFunction) {
+export function requireAuth(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) {
   const header = req.headers.authorization;
   if (!header) return res.status(401).json({ error: "Unauthorized" });
 

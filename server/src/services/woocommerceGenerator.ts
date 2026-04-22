@@ -1,5 +1,4 @@
 export function generateWooTheme(niche: string, goal: string) {
-  // Safe version: replace() with regex replaces ALL matches
   const themeSlug = `${niche.replace(/\s+/g, "-").toLowerCase()}-woo-theme`;
 
   const functionsPhp = `<?php
