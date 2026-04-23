@@ -15,6 +15,7 @@ export async function GET(req: Request) {
 
   for (const f of files) {
     const contents = getThemeFile(themeId, f.path);
+    if (contents == null) continue;
     const lines = contents.split("\n");
     lines.forEach((line, idx) => {
       if (line.toLowerCase().includes(q.toLowerCase())) {

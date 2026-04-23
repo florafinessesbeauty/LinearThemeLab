@@ -1,12 +1,10 @@
 {
-  "compilerOptions": {  
+  "compilerOptions": {
     "types": ["node"],
     "target": "ES2020",
     "lib": ["DOM", "ES2020"],
     "module": "ESNext",
-
-    "moduleResolution": "bundler",
-
+    "moduleResolution": "node",
     "allowJs": false,
     "strict": true,
     "noImplicitAny": true,
@@ -24,29 +22,26 @@
       "@linearthemelab/shared/*": ["packages/shared/src/*"]
     },
 
-    "noEmit": true,
     "incremental": true,
-
-    
-
     "plugins": [
       {
         "name": "next"
       }
     ]
   },
-
+  "references": [
+    { "path": "packages/shared" }
+  ],
   "include": [
-  "app",
-  "server/src",
-  "packages/shared/src",
-  "next-env.d.ts",
-  ".next/types/**/*.ts"
-],
-
+    "app",
+    "server/src",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules",
     ".next",
-    "server/dist"
+    "server/dist",
+    "packages/*/dist"
   ]
 }
