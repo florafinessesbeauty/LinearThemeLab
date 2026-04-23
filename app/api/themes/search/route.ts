@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { listThemeFiles, getThemeFile } from "@server/services/themeFileService";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -10,23 +9,18 @@ export async function GET(req: Request) {
     return NextResponse.json({ results: [] });
   }
 
-  const files = listThemeFiles(themeId);
-  const results: { path: string; line: number; snippet: string }[] = [];
+  const url = new URL(
+    `${process.env.INTERNAL_API_BASE_URL}/api/themes/search`
+  );
+  url.searchParams.set("themeId", themeId);
+  url.searchParams.set("q", q);
 
-  for (const f of files) {
-    const contents = getThemeFile(themeId, f.path);
-    if (contents == null) continue;
-    const lines = contents.split("\n");
-    lines.forEach((line: string, idx: number) => {
-      if (line.toLowerCase().includes(q.toLowerCase())) {
-        results.push({
-          path: f.path,
-          line: idx + 1,
-          snippet: line.trim().slice(0, 120)
-        });
-      }
-    });
+  const res = await fetch(url.toString(), { method: "GET" });
+
+  if (!res.ok) {
+    return NextResponse.json({ results: [] }, { status: res.status });
   }
 
-  return NextResponse.json({ results });
+  const data = await res.json();
+  return NextResponse.json(data);
 }

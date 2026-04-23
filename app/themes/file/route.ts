@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { getThemeFile } from "@server/services/themeFileService";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -10,10 +9,21 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Missing params" }, { status: 400 });
   }
 
-  const contents = getThemeFile(themeId, filePath);
-  if (contents === null) {
-    return NextResponse.json({ error: "File not found" }, { status: 404 });
+  const url = new URL(
+    `${process.env.INTERNAL_API_BASE_URL}/api/themes/file`
+  );
+  url.searchParams.set("themeId", themeId);
+  url.searchParams.set("path", filePath);
+
+  const res = await fetch(url.toString(), { method: "GET" });
+
+  if (!res.ok) {
+    return NextResponse.json(
+      { error: "File not found" },
+      { status: res.status }
+    );
   }
 
-  return NextResponse.json({ path: filePath, contents });
+  const data = await res.json();
+  return NextResponse.json(data);
 }

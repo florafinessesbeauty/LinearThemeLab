@@ -12,18 +12,27 @@ export default function GenerateThemeModal({ onClose }: GenerateThemeModalProps)
   const router = useRouter();
 
   const [platform, setPlatform] = useState<"shopify" | "woocommerce">("shopify");
-  const [niche, setNiche] = useState("");
-  const [goal, setGoal] = useState("");
+  const [niche, setNiche] = useState<string>("");
+  const [goal, setGoal] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   async function generate() {
+    if (!niche || !goal) {
+      alert("Please select a niche and enter a conversion goal");
+      return;
+    }
+
     try {
       setLoading(true);
 
       const res = await fetch("/api/themes/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ platform, niche, goal })
+        body: JSON.stringify({
+          platform,
+          niche,
+          goal
+        })
       });
 
       if (!res.ok) throw new Error("Generation failed");
@@ -70,7 +79,7 @@ export default function GenerateThemeModal({ onClose }: GenerateThemeModalProps)
           onChange={(e) => setNiche(e.target.value)}
         >
           <option value="">Select niche</option>
-          {NICHE_REGISTRY[platform].map((n) => (
+          {NICHE_REGISTRY[platform].map((n: string) => (
             <option key={n} value={n}>
               {n}
             </option>

@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { getThemeFile, saveThemeFile } from "@server/services/themeFileService";
-import { saveVersionEntry } from "@server/services/versionService";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -10,10 +8,22 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Missing params" }, { status: 400 });
   }
 
-  const old = getThemeFile(themeId, path) || "";
+  const res = await fetch(
+    `${process.env.INTERNAL_API_BASE_URL}/api/themes/save`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ themeId, path, contents }),
+    }
+  );
 
-  saveThemeFile(themeId, path, contents);
-  saveVersionEntry(themeId, path, old, contents);
+  if (!res.ok) {
+    return NextResponse.json(
+      { error: "Save failed" },
+      { status: res.status }
+    );
+  }
 
-  return NextResponse.json({ success: true });
+  const data = await res.json();
+  return NextResponse.json(data);
 }

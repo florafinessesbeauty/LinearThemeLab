@@ -44,11 +44,12 @@
     }
   ],
   "include": [
-    "app",
-    "server/src",
-    "next-env.d.ts",
-    ".next/types/**/*.ts"
-  ],
+  "app",
+  "server/src",
+  "types",
+  "next-env.d.ts",
+  ".next/types/**/*.ts"
+],
   "exclude": [
     "node_modules",
     ".next",

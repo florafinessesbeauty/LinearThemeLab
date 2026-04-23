@@ -1,22 +1,24 @@
 import { NextResponse } from "next/server";
-import { getAiSuggestion, AiGoal } from "@server/services/aiService";
 
 export async function POST(req: Request) {
   const body = await req.json();
 
-  const { code, language, goal } = body as {
-    code: string;
-    language: string;
-    goal?: AiGoal;
-  };
+  const res = await fetch(
+    `${process.env.INTERNAL_API_BASE_URL}/api/ai/code-suggest`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }
+  );
 
-  const mode: AiGoal = goal || "improve";
+  if (!res.ok) {
+    return NextResponse.json(
+      { error: "Upstream AI service error" },
+      { status: 500 }
+    );
+  }
 
-  const suggestion = await getAiSuggestion({
-    code,
-    language,
-    goal: mode
-  });
-
-  return NextResponse.json({ suggestion });
+  const data = await res.json();
+  return NextResponse.json(data);
 }

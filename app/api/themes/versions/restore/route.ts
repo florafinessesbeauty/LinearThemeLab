@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { restoreVersion } from "@server/services/versionService";
 
 export async function POST(req: Request) {
   const body = await req.json();
@@ -12,15 +11,22 @@ export async function POST(req: Request) {
     );
   }
 
-  // restoreVersion only accepts (themeId, versionId)
-  const restored = restoreVersion(themeId, versionId);
+  const res = await fetch(
+    `${process.env.INTERNAL_API_BASE_URL}/api/themes/versions/restore`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ themeId, path, versionId }),
+    }
+  );
 
-  if (!restored) {
+  if (!res.ok) {
     return NextResponse.json(
-      { error: "Version not found" },
-      { status: 404 }
+      { error: "Restore failed" },
+      { status: res.status }
     );
   }
 
-  return NextResponse.json({ success: true, restored });
+  const data = await res.json();
+  return NextResponse.json(data);
 }
