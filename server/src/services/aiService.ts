@@ -42,7 +42,7 @@ export async function getAiSuggestion(opts: {
     return `/* AI error: ${res.status} ${res.statusText}\n${text} */\n` + code;
   }
 
-  const data = await res.json().catch(() => ({} as any));
+  const data: any = await res.json().catch(() => ({} as any));
 
   // Adjust this depending on your backend’s response shape
   const suggestion: string =

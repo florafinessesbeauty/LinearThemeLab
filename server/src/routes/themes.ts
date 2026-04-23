@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Response } from "express";
 import { requireAuth, AuthRequest } from "../middleware/auth.js";
 import { uploadThemeZip, createThemeId } from "../services/storageService.js";
 import { addUserTheme, listUserThemes, getThemeById } from "../services/userService.js";
@@ -13,7 +13,7 @@ import { generateThemeWithAdapters } from "../services/copilotThemeService.js";
 
 export const themesRouter = Router();
 
-tthemesRouter.post("/generate", requireAuth, async (req: AuthRequest, res) => {
+themesRouter.post("/generate", requireAuth, async (req: AuthRequest, res: Response) => {
   try {
     const parsed = ThemeGenerateRequestSchema.parse(req.body);
 
