@@ -17,5 +17,10 @@ exports.env = {
     S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY || "",
     S3_BUCKET_NAME: process.env.S3_BUCKET_NAME || "",
     S3_REGION: process.env.S3_REGION || "",
-    JWT_SECRET: process.env.JWT_SECRET || "dev-secret"
+    JWT_SECRET: process.env.JWT_SECRET || "dev-secret",
+    // CDN for theme ZIPs
+    CDN_URL: process.env.CDN_URL || "",
+    // Copilot AI backend endpoint
+    COPILOT_API_URL: process.env.COPILOT_API_URL ||
+        "https://api.copilot.microsoft.com/v1/code"
 };

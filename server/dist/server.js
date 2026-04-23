@@ -4,19 +4,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const morgan_1 = __importDefault(require("morgan"));
-const env_js_1 = require("./config/env.js");
-const security_js_1 = require("./middleware/security.js");
-const index_js_1 = require("./routes/index.js");
+const billing_1 = __importDefault(require("./routes/billing"));
+const payments_1 = require("./routes/payments");
+const webhooks_1 = __importDefault(require("./routes/webhooks"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config({ path: "../.env" });
 const app = (0, express_1.default)();
+// Stripe webhook must use raw body
+app.post("/webhooks/stripe", express_1.default.raw({ type: "application/json" }), webhooks_1.default);
+// Everything else uses JSON
 app.use(express_1.default.json());
-app.use((0, morgan_1.default)("dev"));
-app.use(security_js_1.securityMiddleware);
-app.get("/health", (_req, res) => {
-    res.json({ status: "ok" });
-});
-app.use("/", index_js_1.apiRouter);
-app.use(security_js_1.errorHandler);
-app.listen(env_js_1.env.PORT, () => {
-    console.log(`Server running on port ${env_js_1.env.PORT}`);
+// Billing (checkout + portal)
+app.use("/api", billing_1.default);
+// Payment intents
+app.use("/api/payments", payments_1.paymentsRouter);
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
 });

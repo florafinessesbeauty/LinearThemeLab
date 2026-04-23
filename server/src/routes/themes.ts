@@ -1,7 +1,8 @@
+// C:\Projects\LinearThemeLab\server\src\routes\themes.ts
 import { Router, Response } from "express";
 import { requireAuth, AuthRequest } from "../middleware/auth.js";
 import { uploadThemeZip, createThemeId } from "../services/storageService.js";
-import { addUserTheme, listUserThemes, getThemeById } from "../services/userService.js";
+import { addUserTheme } from "../services/userService.js";
 
 import {
   ThemeGenerateRequestSchema,
@@ -27,7 +28,7 @@ themesRouter.post("/generate", requireAuth, async (req: AuthRequest, res: Respon
     const id = createThemeId();
 
     // Generate theme using adapters
-    const { files, zipBuffer, manifest } = await generateThemeWithAdapters(
+    const { files, manifest } = await generateThemeWithAdapters(
       parsed.platform,
       parsed.niche,
       parsed.goal

@@ -22,10 +22,11 @@ model User {
   teams        TeamMember[]
   usage        Usage[]  
 
-  stripeCustomerId     String?
-stripeSubscriptionId String?
-subscriptionStatus   String?
-plan                 String?   // 'free' | 'pro'
+  // Stripe billing fields (required for webhooks.ts)
+  stripeCustomerId       String?
+  stripeSubscriptionId   String?
+  subscriptionStatus     String?  @default("free")
+  plan                   String?  @default("free")
 
   ownedTeams   Team[]          @relation("UserOwnedTeams")
 }

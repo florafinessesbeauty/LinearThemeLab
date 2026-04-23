@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApiClient = void 0;
+exports.generateThemeFrontend = generateThemeFrontend;
 class ApiClient {
     constructor(opts) {
         this.opts = opts;
@@ -30,3 +31,13 @@ class ApiClient {
     }
 }
 exports.ApiClient = ApiClient;
+async function generateThemeFrontend(data) {
+    const res = await fetch("/api/themes/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    });
+    if (!res.ok)
+        throw new Error("Theme generation failed");
+    return res.json();
+}
