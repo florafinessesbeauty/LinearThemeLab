@@ -20,27 +20,30 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install deps (root)
+      - name: Install root deps
         run: npm install
+
+      - name: Install shared deps
+        run: |
+          cd packages/shared
+          npm install
 
       - name: Install server deps
         run: |
           cd server
           npm install
 
-      - name: Install app deps
-        run: |
-          cd app
-          npm install
-
-      - name: Lint
-        run: npm run lint
+      - name: Build shared
+        run: npx tsc -b packages/shared
 
       - name: Type-check
         run: npx tsc --noEmit
 
+      - name: Lint
+        run: npm run lint
+
       - name: Build server
         run: cd server && npm run build
 
-      - name: Build app
-        run: cd app && npm run build
+      - name: Build Next.js app
+        run: npm run build

@@ -2,9 +2,9 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "@linearthemelab/shared": ["../packages/shared/src"],
-      "@linearthemelab/shared/*": ["../packages/shared/src/*"],
-      "@server/*": ["../server/src/*"]
+      "@linearthemelab/shared": ["../packages/shared/dist/index.js"],
+      "@linearthemelab/shared/*": ["../packages/shared/dist/*"],
+      "@server/*": ["../server/dist/*"]
     }
   },
   "include": ["."]

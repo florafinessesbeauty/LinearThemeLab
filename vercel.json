@@ -1,0 +1,4 @@
+{
+  "buildCommand": "npm install && npx tsc -b packages/shared && npm run build",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD ."
+}
