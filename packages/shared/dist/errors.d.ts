@@ -5,3 +5,4 @@ export declare class AppError extends Error {
 }
 export declare function isAppError(err: unknown): err is AppError;
 export declare function toAppError(err: unknown, fallbackMessage?: string): AppError;
+//# sourceMappingURL=errors.d.ts.map

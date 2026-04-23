@@ -4,3 +4,7 @@ node_modules
 .cache_ggshield
 .env
 .env.local
+.env
+.env.local
+server/.env
+packages/shared/.env

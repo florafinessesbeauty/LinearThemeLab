@@ -1,10 +1,10 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "@linearthemelab/shared": ["../packages/shared/src"],
-      "@linearthemelab/shared/*": ["../packages/shared/src/*"]
+      "@linearthemelab/shared/*": ["../packages/shared/src/*"],
+      "@server/*": ["../server/src/*"]
     }
   },
   "include": ["."]

@@ -1,14 +1,22 @@
-import { s3Client } from "../config/s3.js";
+// C:\Projects\LinearThemeLab\server\src\services\storageService.ts
+import { s3Client } from "../config/s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { env } from "../config/env.js";
+import { env } from "../config/env";
 import { randomUUID } from "node:crypto";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
-import { buildThemeZip } from "@linearthemelab/shared";
-import type { ThemeFile } from "@linearthemelab/shared";
+import { buildThemeZip, type ThemeFile } from "@linearthemelab/shared";
 
-export async function uploadThemeZip(id: string, files: ThemeFile[]) {
+export interface UploadResult {
+  key: string;
+  url: string;
+}
+
+export async function uploadThemeZip(
+  id: string,
+  files: ThemeFile[]
+): Promise<UploadResult> {
   // Build ZIP buffer using shared ZIP builder
   const zipBuffer = await buildThemeZip(files);
 
@@ -24,7 +32,7 @@ export async function uploadThemeZip(id: string, files: ThemeFile[]) {
 
     return {
       key: outPath,
-      url: `file://${outPath}`
+      url: `file://${outPath}`,
     };
   }
 
@@ -34,16 +42,16 @@ export async function uploadThemeZip(id: string, files: ThemeFile[]) {
       Bucket: env.S3_BUCKET_NAME,
       Key: key,
       Body: zipBuffer,
-      ContentType: "application/zip"
+      ContentType: "application/zip",
     })
   );
 
   return {
     key,
-    url: `${env.CDN_URL}/${key}`
+    url: `${env.CDN_URL}/${key}`,
   };
 }
 
-export function createThemeId() {
+export function createThemeId(): string {
   return randomUUID();
 }

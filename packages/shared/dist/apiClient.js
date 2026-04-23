@@ -1,4 +1,8 @@
-export class ApiClient {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ApiClient = void 0;
+exports.generateThemeFrontend = generateThemeFrontend;
+class ApiClient {
     constructor(opts) {
         this.opts = opts;
     }
@@ -26,7 +30,8 @@ export class ApiClient {
         return res.json();
     }
 }
-export async function generateThemeFrontend(data) {
+exports.ApiClient = ApiClient;
+async function generateThemeFrontend(data) {
     const res = await fetch("/api/themes/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

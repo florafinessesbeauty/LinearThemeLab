@@ -1,14 +1,20 @@
-export class AppError extends Error {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AppError = void 0;
+exports.isAppError = isAppError;
+exports.toAppError = toAppError;
+class AppError extends Error {
     constructor(message, status = 500, code = "INTERNAL_ERROR") {
         super(message);
         this.status = status;
         this.code = code;
     }
 }
-export function isAppError(err) {
+exports.AppError = AppError;
+function isAppError(err) {
     return err instanceof AppError;
 }
-export function toAppError(err, fallbackMessage = "Unexpected error") {
+function toAppError(err, fallbackMessage = "Unexpected error") {
     if (err instanceof AppError)
         return err;
     if (err instanceof Error)

@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.logger = void 0;
 function log(level, message, meta) {
     const payload = {
         level,
@@ -9,7 +12,7 @@ function log(level, message, meta) {
     // eslint-disable-next-line no-console
     console.log(JSON.stringify(payload));
 }
-export const logger = {
+exports.logger = {
     debug: (message, meta) => log("debug", message, meta),
     info: (message, meta) => log("info", message, meta),
     warn: (message, meta) => log("warn", message, meta),

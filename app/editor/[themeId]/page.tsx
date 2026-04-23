@@ -21,7 +21,10 @@ type OpenTab = {
   dirty: boolean;
 };
 
-export default function ThemeEditor({ params }: any) {
+export default function ThemeEditor({
+  params,
+}: Readonly<{ params: { themeId: string } }>) {
+
   const { themeId } = params;
 
   const [files, setFiles] = useState<FileEntry[]>([]);
@@ -45,7 +48,7 @@ export default function ThemeEditor({ params }: any) {
 
   // ---------- Helpers ----------
 
-  const getActiveTab = () => tabs.find((t) => t.path === activePath) || null;
+  const getActiveTab = useCallback(() => tabs.find((t) => t.path === activePath) || null, [tabs, activePath]);
 
   const updateTabContents = (path: string, contents: string, dirty = true) => {
     setTabs((prev) =>
@@ -70,7 +73,7 @@ export default function ThemeEditor({ params }: any) {
     async function loadFiles() {
       const res = await fetch(`/api/themes/files?themeId=${themeId}`);
       const data = await res.json();
-      setFiles(data.files || []);
+      setFiles(data.files ?? []);
     }
     loadFiles();
   }, [themeId]);
@@ -86,14 +89,22 @@ export default function ThemeEditor({ params }: any) {
 
     const res = await fetch(`/api/themes/file?themeId=${themeId}&path=${encodeURIComponent(path)}`);
     const data = await res.json();
-    openOrFocusTab(path, data.contents || "");
+    openOrFocusTab(path, data.contents ?? "");
   }
+
+  // ---------- Versions ----------
+
+  const loadVersions = useCallback(async () => {
+    const res = await fetch(`/api/themes/versions?themeId=${themeId}`);
+    const data = await res.json();
+    setVersions(data.versions ?? []);
+  }, [themeId]);
 
   // ---------- Save file (manual + autosave) ----------
 
   const saveFile = useCallback(async () => {
     const active = getActiveTab();
-    if (!active || !active.path) return;
+    if (!active?.path) return;
 
     await fetch(`/api/themes/save`, {
       method: "POST",
@@ -108,24 +119,24 @@ export default function ThemeEditor({ params }: any) {
 
     setPreviewKey((k) => k + 1);
     await loadVersions();
-  }, [themeId, tabs, activePath]);
+  }, [themeId, getActiveTab, loadVersions]);
 
   // Autosave every 2s if dirty
   useEffect(() => {
     const interval = setInterval(() => {
       const active = getActiveTab();
-      if (active && active.dirty) {
+      if (active?.dirty) {
         saveFile();
       }
     }, 2000);
     return () => clearInterval(interval);
-  }, [tabs, saveFile]);
+  }, [saveFile, getActiveTab]);
 
   // ---------- Keyboard shortcuts ----------
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      const isMac = navigator.platform.toLowerCase().includes("mac");
+      const isMac = globalThis.navigator?.userAgent?.toLowerCase().includes("mac") ?? false;
       const mod = isMac ? e.metaKey : e.ctrlKey;
 
       // Save: Ctrl+S / Cmd+S
@@ -147,17 +158,11 @@ export default function ThemeEditor({ params }: any) {
       }
     }
 
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    globalThis.addEventListener("keydown", onKey);
+    return () => globalThis.removeEventListener("keydown", onKey);
   }, [saveFile]);
 
   // ---------- Versions ----------
-
-  async function loadVersions() {
-    const res = await fetch(`/api/themes/versions?themeId=${themeId}`);
-    const data = await res.json();
-    setVersions(data.versions || []);
-  }
 
   async function restoreVersion(timestamp: number) {
     await fetch(`/api/themes/versions/restore`, {
@@ -176,7 +181,7 @@ export default function ThemeEditor({ params }: any) {
 
   async function runAiSuggestion(mode: "improve" | "refactor" | "section" | "fix" | "explain") {
     const active = getActiveTab();
-    if (!active || !active.contents) return;
+    if (!active?.contents) return;
 
     setAiLoading(true);
     try {
@@ -189,7 +194,7 @@ export default function ThemeEditor({ params }: any) {
         })
       });
       const data = await res.json();
-      updateTabContents(active.path, data.suggestion || active.contents, true);
+      updateTabContents(active.path, data.suggestion ?? active.contents, true);
     } finally {
       setAiLoading(false);
     }
@@ -207,7 +212,7 @@ export default function ThemeEditor({ params }: any) {
     const res = await fetch(`/api/themes/file?themeId=${themeId}&path=${encodeURIComponent(settingsFile)}`);
     if (res.ok) {
       const data = await res.json();
-      openOrFocusTab(settingsFile, data.contents || "[]");
+      openOrFocusTab(settingsFile, data.contents ?? "[]");
     } else {
       openOrFocusTab(settingsFile, "[]");
     }
@@ -219,12 +224,12 @@ export default function ThemeEditor({ params }: any) {
     if (!searchQuery.trim()) return;
     const res = await fetch(`/api/themes/search?themeId=${themeId}&q=${encodeURIComponent(searchQuery)}`);
     const data = await res.json();
-    setSearchResults(data.results || []);
+    setSearchResults(data.results ?? []);
   }
 
   // ---------- Error diagnostics (simple) ----------
 
-  function validateCurrent() {
+  const validateCurrent = useCallback(() => {
     const active = getActiveTab();
     if (!active) return;
 
@@ -233,19 +238,18 @@ export default function ThemeEditor({ params }: any) {
     if (active.path.endsWith(".json")) {
       try {
         JSON.parse(active.contents);
-      } catch (e: any) {
-        errs.push(`JSON error: ${e.message}`);
+      } catch (e: unknown) {
+        errs.push(`JSON error: ${(e as Error).message}`);
       }
     }
 
     // (You can later plug real Liquid/PHP linters here)
     setErrors(errs);
-  }
+  }, [getActiveTab]);
 
   useEffect(() => {
     validateCurrent();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activePath, tabs]);
+  }, [activePath, tabs, validateCurrent]);
 
   const activeTab = getActiveTab();
 
@@ -257,9 +261,10 @@ export default function ThemeEditor({ params }: any) {
           Files
         </h2>
         {files.map((f) => (
-          <div
+          <button
+            type="button"
             key={f.path}
-            className={`flex items-center gap-2 p-2 text-sm cursor-pointer rounded-md transition-colors ${
+            className={`flex items-center gap-2 p-2 text-sm cursor-pointer rounded-md transition-colors w-full text-left ${
               activePath === f.path
                 ? "bg-blue-600 text-white"
                 : "hover:bg-[#15151f]"
@@ -270,11 +275,12 @@ export default function ThemeEditor({ params }: any) {
               {f.path.includes("/") ? "📄" : "📁"}
             </span>
             <span className="truncate">{f.path}</span>
-          </div>
+          </button>
         ))}
 
         <div className="mt-6 space-y-2 text-xs text-gray-400">
           <button
+            type="button"
             onClick={openSettings}
             className="w-full px-3 py-2 text-xs bg-purple-700 text-white rounded-md hover:bg-purple-800 transition-colors"
           >
@@ -309,6 +315,7 @@ export default function ThemeEditor({ params }: any) {
 
           <div className="ml-auto flex gap-2 items-center">
             <button
+              type="button"
               onClick={() => runAiSuggestion("improve")}
               disabled={aiLoading}
               className="px-3 py-1 text-xs bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -316,6 +323,7 @@ export default function ThemeEditor({ params }: any) {
               {aiLoading ? "AI…" : "AI: Improve"}
             </button>
             <button
+              type="button"
               onClick={() => runAiSuggestion("refactor")}
               disabled={aiLoading}
               className="px-3 py-1 text-xs bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
@@ -323,6 +331,7 @@ export default function ThemeEditor({ params }: any) {
               {aiLoading ? "AI…" : "AI: Refactor"}
             </button>
             <button
+              type="button"
               onClick={() => runAiSuggestion("section")}
               disabled={aiLoading}
               className="px-3 py-1 text-xs bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
@@ -330,6 +339,7 @@ export default function ThemeEditor({ params }: any) {
               {aiLoading ? "AI…" : "AI: Section"}
             </button>
             <button
+              type="button"
               onClick={() => runAiSuggestion("fix")}
               disabled={aiLoading}
               className="px-3 py-1 text-xs bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
@@ -337,6 +347,7 @@ export default function ThemeEditor({ params }: any) {
               {aiLoading ? "AI…" : "AI: Fix"}
             </button>
             <button
+              type="button"
               onClick={() => runAiSuggestion("explain")}
               disabled={aiLoading}
               className="px-3 py-1 text-xs bg-gray-700 text-white rounded-md hover:bg-gray-600 transition-colors"
@@ -344,6 +355,7 @@ export default function ThemeEditor({ params }: any) {
               {aiLoading ? "AI…" : "AI: Explain"}
             </button>
             <button
+              type="button"
               onClick={saveFile}
               className="ml-4 px-4 py-1 text-xs bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors"
             >
@@ -356,6 +368,7 @@ export default function ThemeEditor({ params }: any) {
         <div className="flex border-b border-gray-800 bg-[#080812] px-2">
           {tabs.map((t) => (
             <button
+              type="button"
               key={t.path}
               className={`flex items-center gap-2 px-3 py-1 text-xs rounded-t-md border-b-2 transition-colors ${
                 t.path === activePath
@@ -377,7 +390,7 @@ export default function ThemeEditor({ params }: any) {
         {errors.length > 0 && (
           <div className="border-b border-red-900 bg-[#1a0505] px-4 py-2 text-xs text-red-300">
             {errors.map((e, i) => (
-              <div key={i}>{e}</div>
+              <div key={`${e}-${i}`}>{e}</div>
             ))}
           </div>
         )}
@@ -390,7 +403,7 @@ export default function ThemeEditor({ params }: any) {
               theme="vs-dark"
               language={activeTab.path.endsWith(".php") ? "php" : "liquid"}
               value={activeTab.contents}
-              onChange={(v) => updateTabContents(activeTab.path, v || "", true)}
+              onChange={(v) => updateTabContents(activeTab.path, v ?? "", true)}
               options={{
                 minimap: { enabled: false },
                 smoothScrolling: true,
@@ -406,7 +419,7 @@ export default function ThemeEditor({ params }: any) {
               theme="vs-dark"
               language="json"
               value={activeTab.contents}
-              onChange={(v) => updateTabContents(activeTab.path, v || "", true)}
+              onChange={(v) => updateTabContents(activeTab.path, v ?? "", true)}
               options={{
                 minimap: { enabled: false },
                 fontSize: 13,
@@ -430,12 +443,14 @@ export default function ThemeEditor({ params }: any) {
                     </div>
                     <div className="mt-2 flex gap-2">
                       <button
+                        type="button"
                         className="px-2 py-1 text-[11px] bg-gray-700 rounded-md hover:bg-gray-600"
                         onClick={() => setSelectedVersion(v)}
                       >
                         View Diff
                       </button>
                       <button
+                        type="button"
                         className="px-2 py-1 text-[11px] bg-red-600 text-white rounded-md hover:bg-red-700"
                         onClick={() => restoreVersion(v.timestamp)}
                       >
@@ -482,12 +497,14 @@ export default function ThemeEditor({ params }: any) {
               }}
             />
             <button
+              type="button"
               onClick={runSearch}
               className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
               Search
             </button>
             <button
+              type="button"
               onClick={() => setShowSearchPanel(false)}
               className="px-2 py-1 text-gray-400 hover:text-gray-200"
             >
@@ -498,10 +515,11 @@ export default function ThemeEditor({ params }: any) {
 
         {showSearchPanel && searchResults.length > 0 && (
           <div className="border-t border-gray-800 bg-[#080812] px-4 py-2 text-xs max-h-40 overflow-y-auto">
-            {searchResults.map((r, i) => (
-              <div
-                key={`${r.path}-${i}`}
-                className="py-1 cursor-pointer hover:bg-[#11111c] rounded-md px-2"
+            {searchResults.map((r) => (
+              <button
+                type="button"
+                key={r.path}
+                className="py-1 cursor-pointer hover:bg-[#11111c] rounded-md px-2 w-full text-left"
                 onClick={() => {
                   openFile(r.path);
                   setShowSearchPanel(false);
@@ -511,7 +529,7 @@ export default function ThemeEditor({ params }: any) {
                 <div className="text-[11px] text-gray-500">
                   Line {r.line}: {r.snippet}
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         )}
@@ -522,6 +540,7 @@ export default function ThemeEditor({ params }: any) {
         <iframe
           key={previewKey}
           src={`/api/themes/preview?id=${themeId}`}
+          title={`Preview of theme ${themeId}`}
           className="w-full h-full transition-opacity duration-300"
         />
       </div>
@@ -552,11 +571,11 @@ function QuickOpenInner({
   files,
   onClose,
   onOpen
-}: {
+}: Readonly<{
   files: FileEntry[];
   onClose: () => void;
   onOpen: (path: string) => void;
-}) {
+}>) {
   const [query, setQuery] = useState("");
   const filtered = files.filter((f) =>
     f.path.toLowerCase().includes(query.toLowerCase())
@@ -566,8 +585,8 @@ function QuickOpenInner({
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
     }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    globalThis.addEventListener("keydown", onKey);
+    return () => globalThis.removeEventListener("keydown", onKey);
   }, [onClose]);
 
   return (
@@ -586,13 +605,14 @@ function QuickOpenInner({
       />
       <div className="max-h-64 overflow-y-auto text-sm">
         {filtered.map((f) => (
-          <div
+          <button
+            type="button"
             key={f.path}
-            className="px-3 py-1 cursor-pointer hover:bg-[#151520]"
+            className="px-3 py-1 cursor-pointer hover:bg-[#151520] w-full text-left"
             onClick={() => onOpen(f.path)}
           >
             {f.path}
-          </div>
+          </button>
         ))}
         {filtered.length === 0 && (
           <div className="px-3 py-2 text-xs text-gray-500">

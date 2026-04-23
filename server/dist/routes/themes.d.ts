@@ -1,2 +1,2 @@
-export declare const themesRouter: import("express-serve-static-core").Router;
+export declare const themesRouter: any;
 //# sourceMappingURL=themes.d.ts.map

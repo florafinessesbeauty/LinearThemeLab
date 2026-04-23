@@ -35,9 +35,10 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadThemeZip = uploadThemeZip;
 exports.createThemeId = createThemeId;
-const s3_js_1 = require("../config/s3.js");
+// C:\Projects\LinearThemeLab\server\src\services\storageService.ts
+const s3_1 = require("../config/s3");
 const client_s3_1 = require("@aws-sdk/client-s3");
-const env_js_1 = require("../config/env.js");
+const env_1 = require("../config/env");
 const node_crypto_1 = require("node:crypto");
 const fs = __importStar(require("node:fs"));
 const path = __importStar(require("node:path"));
@@ -47,26 +48,26 @@ async function uploadThemeZip(id, files) {
     const zipBuffer = await (0, shared_1.buildThemeZip)(files);
     const key = `themes/${id}.zip`;
     // LOCAL FALLBACK (no S3 configured)
-    if (!env_js_1.env.S3_BUCKET_NAME) {
+    if (!env_1.env.S3_BUCKET_NAME) {
         const outDir = path.join(process.cwd(), "tmp", "themes");
         fs.mkdirSync(outDir, { recursive: true });
         const outPath = path.join(outDir, `${id}.zip`);
         fs.writeFileSync(outPath, zipBuffer);
         return {
             key: outPath,
-            url: `file://${outPath}`
+            url: `file://${outPath}`,
         };
     }
     // UPLOAD TO S3
-    await s3_js_1.s3Client.send(new client_s3_1.PutObjectCommand({
-        Bucket: env_js_1.env.S3_BUCKET_NAME,
+    await s3_1.s3Client.send(new client_s3_1.PutObjectCommand({
+        Bucket: env_1.env.S3_BUCKET_NAME,
         Key: key,
         Body: zipBuffer,
-        ContentType: "application/zip"
+        ContentType: "application/zip",
     }));
     return {
         key,
-        url: `${env_js_1.env.CDN_URL}/${key}`
+        url: `${env_1.env.CDN_URL}/${key}`,
     };
 }
 function createThemeId() {

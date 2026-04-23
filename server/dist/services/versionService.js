@@ -36,6 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.saveVersionEntry = saveVersionEntry;
 exports.listVersions = listVersions;
 exports.restoreVersion = restoreVersion;
+// C:\Projects\LinearThemeLab\server\src\services\versionService.ts
 const fs = __importStar(require("node:fs"));
 const path = __importStar(require("node:path"));
 const themeFileService_1 = require("./themeFileService");
@@ -47,7 +48,7 @@ function saveVersionEntry(themeId, filePath, old, updated) {
         path: filePath,
         old,
         new: updated,
-        timestamp: Date.now()
+        timestamp: Date.now(),
     };
     const file = path.join(dir, `${entry.timestamp}.json`);
     fs.writeFileSync(file, JSON.stringify(entry, null, 2));
@@ -56,11 +57,14 @@ function listVersions(themeId) {
     const dir = path.join(ROOT, themeId);
     if (!fs.existsSync(dir))
         return [];
-    return fs.readdirSync(dir).map((f) => {
+    return fs
+        .readdirSync(dir)
+        .map((f) => {
         const full = path.join(dir, f);
         const data = JSON.parse(fs.readFileSync(full, "utf-8"));
         return data;
-    }).sort((a, b) => b.timestamp - a.timestamp);
+    })
+        .sort((a, b) => b.timestamp - a.timestamp);
 }
 function restoreVersion(themeId, timestamp) {
     const dir = path.join(ROOT, themeId);

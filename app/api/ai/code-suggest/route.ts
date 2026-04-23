@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAiSuggestion, AiGoal } from "@/server/src/services/aiService";
+import { getAiSuggestion, AiGoal } from "@server/services/aiService";
 
 export async function POST(req: Request) {
   const body = await req.json();

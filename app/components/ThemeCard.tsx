@@ -2,7 +2,16 @@
 
 import Link from "next/link";
 
-export default function ThemeCard({ theme }: { theme: any }) {
+type ThemeCardProps = Readonly<{
+  theme: {
+    id: string;
+    niche: string;
+    platform: string;
+    goal: string;
+  };
+}>;
+
+export default function ThemeCard({ theme }: ThemeCardProps) {
   return (
     <div className="border border-gray-700 p-5 rounded-lg bg-[#111]">
       <h2 className="text-xl font-bold">{theme.niche}</h2>

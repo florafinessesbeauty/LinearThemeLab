@@ -1,6 +1,10 @@
-import { slugify } from "../utils/slug";
-export function generateShopifyThemeFiles(niche, goal) {
-    const slug = slugify(`${niche}-${goal}`);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ShopifyAdapter = void 0;
+exports.generateShopifyThemeFiles = generateShopifyThemeFiles;
+const slug_1 = require("../utils/slug");
+function generateShopifyThemeFiles(niche, goal) {
+    const slug = (0, slug_1.slugify)(`${niche}-${goal}`);
     const layoutThemeLiquid = `<!doctype html>
 <html lang="en">
   <head>
@@ -46,7 +50,7 @@ export function generateShopifyThemeFiles(niche, goal) {
         }
     ];
 }
-export const ShopifyAdapter = {
+exports.ShopifyAdapter = {
     id: "shopify",
     label: "Shopify",
     generateFiles: ({ niche, goal }) => generateShopifyThemeFiles(niche, goal)

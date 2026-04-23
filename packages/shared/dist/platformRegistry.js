@@ -1,4 +1,7 @@
-export const PLATFORM_REGISTRY = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PLATFORM_REGISTRY = void 0;
+exports.PLATFORM_REGISTRY = {
     shopify: {
         id: "shopify",
         label: "Shopify",

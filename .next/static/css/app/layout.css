@@ -152,6 +152,9 @@
 .text-center {
   text-align: center;
 }
+.text-left {
+  text-align: left;
+}
 .text-\[10px\] {
   font-size: 10px;
 }

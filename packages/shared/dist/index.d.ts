@@ -12,3 +12,4 @@ export * from "./themeFiles/shopify";
 export * from "./themeFiles/woocommerce";
 export * from "./zipBuilder";
 export * from "./templateEngine";
+//# sourceMappingURL=index.d.ts.map

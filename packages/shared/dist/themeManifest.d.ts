@@ -14,3 +14,4 @@ export declare function createThemeManifest(input: {
     niche: string;
     goal: string;
 }): ThemeManifest;
+//# sourceMappingURL=themeManifest.d.ts.map

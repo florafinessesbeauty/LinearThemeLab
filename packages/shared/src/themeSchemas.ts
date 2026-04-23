@@ -18,6 +18,3 @@ export const ThemeGenerateResponseSchema = z.object({
 });
 
 export type ThemeGenerateResponse = z.infer<typeof ThemeGenerateResponseSchema>;
-
-export const ThemeRecordSchema = ThemeGenerateResponseSchema;
-export type ThemeRecord = ThemeGenerateResponse;

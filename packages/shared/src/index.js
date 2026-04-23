@@ -15,18 +15,20 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // Canonical source of ThemePlatform must be exported first
-__exportStar(require("./platformRegistry"), exports);
+export * from "./platformRegistry";
+
 // Then everything else
-__exportStar(require("./themeSchemas"), exports);
-__exportStar(require("./apiClient"), exports);
-__exportStar(require("./types"), exports);
-__exportStar(require("./validation"), exports);
-__exportStar(require("./metadata"), exports);
-__exportStar(require("./errors"), exports);
-__exportStar(require("./logger"), exports);
-__exportStar(require("./utils/slug"), exports);
-__exportStar(require("./themeManifest"), exports);
-__exportStar(require("./themeFiles/shopify"), exports);
-__exportStar(require("./themeFiles/woocommerce"), exports);
-__exportStar(require("./zipBuilder"), exports);
-__exportStar(require("./templateEngine"), exports);
+export * from "./themeSchemas";
+export * from "./apiClient";
+export * from "./types";
+export * from "./validation";
+export * from "./metadata";
+export * from "./errors";
+export * from "./logger";
+export * from "./utils/slug";
+export * from "./themeManifest";
+export * from "./themeFiles/shopify";
+export * from "./themeFiles/woocommerce";
+export * from "./zipBuilder";
+export * from "./templateEngine";
+

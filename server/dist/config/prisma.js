@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.prisma = void 0;
+// C:\Projects\LinearThemeLab\server\src\config\prisma.ts
 const client_1 = require("@prisma/client");
-const globalForPrisma = global;
+const globalForPrisma = globalThis;
 exports.prisma = globalForPrisma.prisma ??
     new client_1.PrismaClient({
         log: ["error", "warn"],

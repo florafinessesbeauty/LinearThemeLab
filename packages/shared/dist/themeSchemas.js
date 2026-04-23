@@ -1,15 +1,17 @@
-import { z } from "zod";
-export const ThemeGenerateRequestSchema = z.object({
-    platform: z.enum(["shopify", "woocommerce"]),
-    niche: z.string().min(1),
-    goal: z.string().min(1)
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ThemeGenerateResponseSchema = exports.ThemeGenerateRequestSchema = void 0;
+const zod_1 = require("zod");
+exports.ThemeGenerateRequestSchema = zod_1.z.object({
+    platform: zod_1.z.enum(["shopify", "woocommerce"]),
+    niche: zod_1.z.string().min(1),
+    goal: zod_1.z.string().min(1)
 });
-export const ThemeGenerateResponseSchema = z.object({
-    id: z.string(),
-    platform: z.enum(["shopify", "woocommerce"]),
-    niche: z.string(),
-    goal: z.string(),
-    s3Key: z.string(),
-    createdAt: z.string()
+exports.ThemeGenerateResponseSchema = zod_1.z.object({
+    id: zod_1.z.string(),
+    platform: zod_1.z.enum(["shopify", "woocommerce"]),
+    niche: zod_1.z.string(),
+    goal: zod_1.z.string(),
+    s3Key: zod_1.z.string(),
+    createdAt: zod_1.z.string()
 });
-export const ThemeRecordSchema = ThemeGenerateResponseSchema;

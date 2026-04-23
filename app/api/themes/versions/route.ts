@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listVersions } from "@/server/src/services/versionService";
+import { listVersions } from "@server/services/versionService";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);

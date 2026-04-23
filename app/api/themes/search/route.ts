@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listThemeFiles, getThemeFile } from "@/server/src/services/themeFileService";
+import { listThemeFiles, getThemeFile } from "@server/services/themeFileService";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -17,7 +17,7 @@ export async function GET(req: Request) {
     const contents = getThemeFile(themeId, f.path);
     if (contents == null) continue;
     const lines = contents.split("\n");
-    lines.forEach((line, idx) => {
+    lines.forEach((line: string, idx: number) => {
       if (line.toLowerCase().includes(q.toLowerCase())) {
         results.push({
           path: f.path,

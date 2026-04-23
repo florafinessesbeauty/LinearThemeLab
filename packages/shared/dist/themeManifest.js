@@ -1,4 +1,7 @@
-export function createThemeManifest(input) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createThemeManifest = createThemeManifest;
+function createThemeManifest(input) {
     return {
         id: input.id,
         name: `${input.niche} – ${input.platform} theme`,

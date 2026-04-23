@@ -4,7 +4,11 @@ import { useState } from "react";
 import { NICHE_REGISTRY } from "@linearthemelab/shared";
 import { useRouter } from "next/navigation";
 
-export default function GenerateThemeModal({ onClose }: { onClose: () => void }) {
+type GenerateThemeModalProps = Readonly<{
+  onClose: () => void;
+}>;
+
+export default function GenerateThemeModal({ onClose }: GenerateThemeModalProps) {
   const router = useRouter();
 
   const [platform, setPlatform] = useState<"shopify" | "woocommerce">("shopify");
@@ -29,6 +33,7 @@ export default function GenerateThemeModal({ onClose }: { onClose: () => void })
       router.push(`/themes/${data.id}`);
       onClose();
     } catch (err) {
+      console.error("Theme generation failed:", err);
       alert("Theme generation failed");
     } finally {
       setLoading(false);
@@ -40,18 +45,26 @@ export default function GenerateThemeModal({ onClose }: { onClose: () => void })
       <div className="bg-[#111] p-8 rounded-lg w-[450px] border border-gray-700">
         <h2 className="text-2xl font-bold mb-4">Generate New Theme</h2>
 
-        <label className="block text-sm mb-1">Platform</label>
+        {/* Platform */}
+        <label htmlFor="platform" className="block text-sm mb-1">
+          Platform
+        </label>
         <select
+          id="platform"
           className="w-full p-3 bg-[#1a1a1d] rounded mb-4"
           value={platform}
-          onChange={(e) => setPlatform(e.target.value as any)}
+          onChange={(e) => setPlatform(e.target.value as "shopify" | "woocommerce")}
         >
           <option value="shopify">Shopify</option>
           <option value="woocommerce">WooCommerce</option>
         </select>
 
-        <label className="block text-sm mb-1">Niche</label>
+        {/* Niche */}
+        <label htmlFor="niche" className="block text-sm mb-1">
+          Niche
+        </label>
         <select
+          id="niche"
           className="w-full p-3 bg-[#1a1a1d] rounded mb-4"
           value={niche}
           onChange={(e) => setNiche(e.target.value)}
@@ -64,8 +77,12 @@ export default function GenerateThemeModal({ onClose }: { onClose: () => void })
           ))}
         </select>
 
-        <label className="block text-sm mb-1">Conversion Goal</label>
+        {/* Goal */}
+        <label htmlFor="goal" className="block text-sm mb-1">
+          Conversion Goal
+        </label>
         <input
+          id="goal"
           className="w-full p-3 bg-[#1a1a1d] rounded mb-4"
           placeholder="High AOV, High CTR, etc."
           value={goal}

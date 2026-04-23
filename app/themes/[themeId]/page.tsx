@@ -2,9 +2,21 @@
 
 import { useEffect, useState } from "react";
 
-export default function ThemeDetails({ params }: any) {
+interface ThemePreview {
+  manifest: {
+    name: string;
+    platform: string;
+    niche: string;
+    goal: string;
+  };
+  downloadUrl: string;
+}
+
+export default function ThemeDetails({
+  params,
+}: Readonly<{ params: { themeId: string } }>) {
   const { themeId } = params;
-  const [theme, setTheme] = useState<any>(null);
+  const [theme, setTheme] = useState<ThemePreview | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -35,6 +47,7 @@ export default function ThemeDetails({ params }: any) {
       </a>
 
       <iframe
+        title="Theme preview"
         src={`/api/themes/preview?id=${themeId}`}
         className="w-full h-[600px] mt-10 border border-gray-700 rounded"
       />

@@ -17,3 +17,4 @@ export interface PlatformAdapter {
         goal: string;
     }): ThemeFile[];
 }
+//# sourceMappingURL=platformRegistry.d.ts.map

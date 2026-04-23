@@ -20,15 +20,4 @@ export declare const ThemeGenerateResponseSchema: z.ZodObject<{
     createdAt: z.ZodString;
 }, z.core.$strip>;
 export type ThemeGenerateResponse = z.infer<typeof ThemeGenerateResponseSchema>;
-export declare const ThemeRecordSchema: z.ZodObject<{
-    id: z.ZodString;
-    platform: z.ZodEnum<{
-        shopify: "shopify";
-        woocommerce: "woocommerce";
-    }>;
-    niche: z.ZodString;
-    goal: z.ZodString;
-    s3Key: z.ZodString;
-    createdAt: z.ZodString;
-}, z.core.$strip>;
-export type ThemeRecord = ThemeGenerateResponse;
+//# sourceMappingURL=themeSchemas.d.ts.map

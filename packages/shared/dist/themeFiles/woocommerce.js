@@ -1,6 +1,10 @@
-import { slugify } from "../utils/slug";
-export function generateWooThemeFiles(niche, goal) {
-    const slug = `${slugify(niche)}-woo-theme`;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.WooCommerceAdapter = void 0;
+exports.generateWooThemeFiles = generateWooThemeFiles;
+const slug_1 = require("../utils/slug");
+function generateWooThemeFiles(niche, goal) {
+    const slug = `${(0, slug_1.slugify)(niche)}-woo-theme`;
     const styleCss = `/*
 Theme Name: ${niche} – WooCommerce
 Theme URI: https://linearthemelab.example
@@ -46,7 +50,7 @@ add_action('after_setup_theme', '${slug}_setup');
         }
     ];
 }
-export const WooCommerceAdapter = {
+exports.WooCommerceAdapter = {
     id: "woocommerce",
     label: "WooCommerce",
     generateFiles: ({ niche, goal }) => generateWooThemeFiles(niche, goal)
